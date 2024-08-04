@@ -1,39 +1,56 @@
-class Runner:
-    def __init__(self, name, speed=5):
-        self.name = name
-        self.distance = 0
-        self.speed = speed
-
-    def run(self):
-        self.distance += self.speed * 2
-
-    def walk(self):
-        self.distance += self.speed
-
-    def __str__(self):
-        return self.name
-
-    def __eq__(self, other):
-        if isinstance(other, str):
-            return self.name == other
-        elif isinstance(other, Runner):
-            return self.name == other.name
+from runner_and_tournament import runner_and_tournament as run
+import unittest
 
 
-class Tournament:
-    def __init__(self, distance, *participants):
-        self.full_distance = distance
-        self.participants = list(participants)
+class TournamentTes(unittest.TestCase):
+    is_frozen = True
 
-    def start(self):
-        finishers = {}
-        place = 1
-        while self.participants:
-            for participant in self.participants:
-                participant.run()
-                if participant.distance >= self.full_distance:
-                    finishers[place] = participant
-                    place += 1
-                    self.participants.remove(participant)
+    @classmethod
+    def setUpClass(cls):
+        cls.all_results = {}
 
-        return finishers
+    @classmethod
+    def tearDownClass(cls):
+        for i in cls.all_results.values():
+            print(i)
+
+
+
+    def setUp(self):
+        self.usein = run.Runner(name='Усэйн', speed=10)
+        self.andrie = run.Runner(name='Андрей', speed=9)
+        self.nick = run.Runner(name='Ник', speed=3)
+
+    @unittest.skipIf(is_frozen, 'Тесты в этом кейсе заморожены')
+    def test_run_1(self):
+        run1 = run.Tournament(90, self.usein, self.nick)
+        result = run1.start()
+        self.all_results['test1'] = {a: b.name for a, b in result.items()}
+        self.assertEqual(result[2], self.nick.name)
+
+    @unittest.skipIf(is_frozen, 'Тесты в этом кейсе заморожены')
+    def test_run_2(self):
+        run1 = run.Tournament(90, self.andrie, self.nick)
+        result = run1.start()
+        self.all_results['test2'] = {a: b.name for a, b in result.items()}
+        self.assertEqual(result[2], self.nick.name)
+
+    @unittest.skipIf(is_frozen, 'Тесты в этом кейсе заморожены')
+    def test_run_3(self):
+        run1 = run.Tournament(90, self.usein, self.andrie, self.nick)
+        result = run1.start()
+        self.all_results['test3'] = {a: b.name for a, b in result.items()}
+        self.assertEqual(result[3], self.nick.name)
+
+
+
+if __name__ == '__main__':
+    unittest.main()
+
+
+
+
+
+
+
+
